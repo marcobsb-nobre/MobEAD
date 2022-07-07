@@ -40,7 +40,7 @@ pipeline {
                     sh  """
                         docker stop ${containerName} || true && \
                         docker rm ${containerName} || true && \
-                        docker run -d --name teste -p 8180:80 ${dockerImage}
+                        docker run -d --name ${containerName} -p 8180:80 ${tagName}:$BUILD_NUMBER
                     """
                 }
             }
