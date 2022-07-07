@@ -35,9 +35,9 @@ pipeline {
         }
         stage('Deploy container') {
             steps {
-                script {
-                    sh  docker run -d --name teste -p 8180:80 teste
-                }
+               
+                    sh  'docker run -d --name teste -p 8180:80 teste'
+                
             }
         }
     } 
