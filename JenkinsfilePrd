@@ -35,16 +35,18 @@ pipeline {
         }
         stage('Deploy container') {
             steps {
-                def fullContainerName = "${env.containerName}_${params.environment}"
-                command = """
-                    docker stop ${fullContainerName} || true && \
-                    docker rm ${fullContainerName} || true && \
-                    docker run -d --name ${fullContainerName} \
-                            -p ${params.port}:80 \
-                            ${env.tagName}:$BUILD_NUMBER
+                script {
+                    def fullContainerName = "${env.containerName}_${params.environment}"
+                    command = """
+                        docker stop ${fullContainerName} || true && \
+                        docker rm ${fullContainerName} || true && \
+                        docker run -d --name ${fullContainerName} \
+                                -p ${params.port}:80 \
+                                ${env.tagName}:$BUILD_NUMBER
 
-                """
-                sh 'docker stop ${con}'
+                    """
+                    sh command
+                }
             }
         }
     } 
