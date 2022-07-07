@@ -33,12 +33,12 @@ pipeline {
 
            }
         }
-        stage('Deploy container') {
-            steps {
+        // stage('Deploy container') {
+        //     steps {
                
-                    sh  'docker run -d --name teste -p 8180:80 teste'
+        //             sh  'docker run -d --name teste -p 8180:80 teste'
                 
-            }
-        }
+        //     }
+        // }
     } 
 }
