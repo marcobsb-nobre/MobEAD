@@ -1,6 +1,7 @@
 pipeline {  
     environment {
       tagName = "marcos_nobre_unyleya"
+      containerName = "aplicacao_ead"
     }
     agent any 
     stages { 
@@ -16,7 +17,14 @@ pipeline {
                 }
             }
         }
-        stage('Require approval'){
+        stage('Build image') {
+            steps{
+                script {
+                    dockerImage = docker.build ${env.tagName} + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('Require approval') {
            input{
                 message "Do you want to proceed for production deployment?"
            }
@@ -25,13 +33,19 @@ pipeline {
 
            }
         }
-        stage('Build image') {
-            steps{
-                script {
-                    dockerImage = docker.build tagName + ":$BUILD_NUMBER"
-                }
+        stage('Deploy container') {
+            steps {
+                def fullContainerName = "${env.containerName}_${params.environment}"
+                command = """
+                    docker stop ${fullContainerName} || true && \
+                    docker rm ${fullContainerName} || true && \
+                    docker run -d --name ${fullContainerName} \
+                            -p ${params.port}:80 \
+                            ${env.tagName}:$BUILD_NUMBER
+
+                """
+                sh 'docker stop ${con}'
             }
         }
-        
     } 
 }
