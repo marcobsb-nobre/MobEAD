@@ -37,10 +37,13 @@ pipeline {
         stage('Deploy container') {
             steps {
                 script {
+                    def fullName = """${containerName}_${params.environment}"""
                     sh  """
-                        docker stop ${containerName} || true && \
-                        docker rm ${containerName} || true && \
-                        docker run -d --name ${containerName} -p 8180:80 ${tagName}:$BUILD_NUMBER
+                        docker stop ${fullName} || true && \
+                        docker rm ${fullName} || true && \
+                        docker run -d --name ${fullName} \\
+                        -p ${params.port}:80 \\
+                        ${tagName}:$BUILD_NUMBER
                     """
                 }
             }
