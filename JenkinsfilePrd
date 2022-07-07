@@ -16,6 +16,9 @@ pipeline {
                 }
             }
         }
+        stage('Require approval'){
+            input "Deploy em produção?";
+        }
         stage('Build image') {
             steps{
                 script {
