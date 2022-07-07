@@ -5,22 +5,22 @@ pipeline {
     }
     agent any 
     stages { 
-       stage('SonarQube analysis') {
-            steps{
-                script{
-                    def scannerHome = tool 'sonarscan';
-                    withSonarQubeEnv('sonarqube') {
-                        sh "${tool("sonarscan")}/bin/sonar-scanner \
-                            -Dsonar.projectKey=marcos_nobre_unyleya \
-                            -Dsonar.projectName=marcos_nobre_unyleya"
-                    }
-                }
-            }
-        }
+    //    stage('SonarQube analysis') {
+    //         steps{
+    //             script{
+    //                 def scannerHome = tool 'sonarscan';
+    //                 withSonarQubeEnv('sonarqube') {
+    //                     sh "${tool("sonarscan")}/bin/sonar-scanner \
+    //                         -Dsonar.projectKey=marcos_nobre_unyleya \
+    //                         -Dsonar.projectName=marcos_nobre_unyleya"
+    //                 }
+    //             }
+    //         }
+    //     }
         stage('Build image') {
             steps{
                 script {
-                    dockerImage = docker.build ${env.tagName} + ":$BUILD_NUMBER"
+                    dockerImage = docker.build teste
                 }
             }
         }
@@ -36,16 +36,7 @@ pipeline {
         stage('Deploy container') {
             steps {
                 script {
-                    def fullContainerName = "${env.containerName}_${params.environment}"
-                    command = """
-                        docker stop ${fullContainerName} || true && \
-                        docker rm ${fullContainerName} || true && \
-                        docker run -d --name ${fullContainerName} \
-                                -p ${params.port}:80 \
-                                ${env.tagName}:$BUILD_NUMBER
-
-                    """
-                    sh command
+                    sh  docker run -d --name teste -p 8180:80 teste
                 }
             }
         }
