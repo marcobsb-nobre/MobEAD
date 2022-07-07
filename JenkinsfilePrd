@@ -17,7 +17,13 @@ pipeline {
             }
         }
         stage('Require approval'){
-            input "Deploy em produção?";
+           input{
+                message "Do you want to proceed for production deployment?"
+           }
+           steps {
+                sh 'echo "Deploy into Prod"'
+
+           }
         }
         stage('Build image') {
             steps{
